@@ -1,0 +1,51 @@
+@startuml
+skinparam classAttributeIconSize 0
+class Catalog {
+
+    + Catalog()
+    + addRobot(code: String, maxWeight: double): boolean
+    + getRobotsCatalog(): List<Robot>
+    + getRobotByCode(code: String): Robot
+    + addComponentToRobot(code: String, id: int, name: String, weight: double): boolean
+    + removeRobot(code: String): boolean
+    + getComponentsNamesUsedInAllRobots(): List<String>
+}
+
+class Robot {
+    - code: String
+    - maxWeight: double
+
+    + Robot(code: String, maxWeight: double)
+    + getCode(): String
+    + getMaxWeight(): double
+    + setCode(code: String): void
+    + setMaxWeight(maxWeight: double): void
+    + getComponents(): List<Component>
+    + addComponent(id: int, name: String, weight: double): boolean
+    + getComponentsWeight(): double
+    + getComponentsNames(): List<String>
+}
+
+class Component {
+    - id: int
+    - name: String
+    - weight: double
+
+    + Component(id: int, name: String, weight: double)
+    + getId(): int
+    + getName(): String
+    + getWeight(): double
+    + setId(id: int): void
+    + setName(name: String): void
+}
+
+Robot "1" o- "*" Component : Has a list (components) >
+Catalog "1" o- "*" Robot : Has a list (robotsCatalog) >
+
+together {
+    class Catalog
+    class Robot
+    class Component
+}
+
+@enduml

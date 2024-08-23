@@ -1,0 +1,316 @@
+@startuml
+skinparam classAttributeIconSize 0
+class com.javeriana.models.Artist $Artist {
+    - id: UUID
+    - name: String
+
+    + Artist(id: UUID, name: String)
+    + Artist(name: String)
+}
+
+class com.javeriana.models.Customer $Customer {
+    - id: UUID
+    - username: String
+    - password: String
+    - name: String
+    - lastName: String
+    - age: int
+
+    + Customer(username: String, password: String, name: String, lastName: String, age: int)
+    + Customer(UUID: id, username: String, password: String, name: String, lastName: String, age: int, List<Artist> followedArtists, List<playList> playLists)
+}
+
+class com.javeriana.models.playList $PlayList {
+    - id: UUID
+    - name: String
+
+    + playList(name: String)
+    + playList(UUID: id, name: String, List<Song> songs)
+}
+
+class com.javeriana.models.Song $Song {
+    - id: UUID
+    - name: String
+    - genre: String
+    - durationInSeconds: int
+    - album: String
+
+    + Song(name: String, genre: String, durationInSeconds: int, album: String)
+    + Song(UUID: id, name: String, genre: String, durationInSeconds: int, album: String, List<Artist> artists)
+}
+
+class com.javeriana.services.ArtistService $ArtistService {
+
+    + ArtistService()
+
+    + getArtists(): List<Artist>
+    + addArtist(name: String): Artist
+    + removeArtist(id: String): boolean
+    + getArtistById(id: String): Artist
+    + getArtistsToString(): List<String>
+}
+
+class com.javeriana.services.CustomerAdminService $CustomerAdminService {
+
+    + CustomerAdminService()
+
+    + getCustomers(): List<Customer>
+    + addCustomer(username: String, password: String, name: String, lastName: String, age: int): Customer
+    + removeCustomer(id: String): boolean
+    + getCustomerById(id: String): Customer
+    + getCustomersToString(): List<String>
+}
+
+class com.javeriana.services.SongService $SongService {
+
+    + SongService()
+
+    + getSongs(): List<Song>
+    + addSong(name: String, genre: String, durationInSeconds: int, album: String, List<Artist>): Song
+    + removeSong(id: String): boolean
+    + getSongById(id: String): Song
+    + getSongsToString(): List<String>
+}
+
+class com.javeriana.services.PlayListService $PlayListService {
+
+    + PlayListService()
+
+    + getPlayLists(): List<playList>
+    + addPlayList(name: String): playList
+    + removePlayList(id: String): boolean
+    + getPlayListById(id: String): playList
+    + getPlayListsToString(): List<String>
+}
+
+class com.javeriana.controllers.AdminController $AdminController {
+
+    + AdminController(artistService: ArtistService, customerAdminService: CustomerAdminService, songService: SongService, playListService: PlayListService)
+
+    + addArtist(name: String): void
+    + removeArtist(id: String): void
+    + addCustomer(username: String, password: String, name: String, lastName: String, age: int): void
+    + removeCustomer(id: String): void
+    + addSong(name: String, genre: String, durationInSeconds: int, album: String, List<Artist>): void
+    + removeSong(id: String): void
+    + addPlayList(name: String): void
+    + removePlayList(id: String): void
+    + getCustomersToString(): List<String>
+    + getSongsToString(): List<String>
+    + getArtistsToString(): List<String>
+    + getPlayListsToString(): List<String>
+
+}
+
+class com.javeriana.views.AdminView $AdminView {
+
+    - scanner : Scanner
+
+    + AdminView(adminController: AdminController)
+
+    + showMenu(): void
+    + addArtist(): void
+    + removeArtist(): void
+    + addCustomer(): void
+    + removeCustomer(): void
+    + addSong(): void
+    + removeSong(): void
+    + addPlayList(): void
+    + removePlayList(): void
+    + showCustomers(): void
+    + showSongs(): void
+    + showArtists(): void
+    + showPlayLists(): void
+}
+
+class Main $Main {
+
+    + Main()
+    + main(args: String[]): void
+
+
+}
+
+' Relaciones
+com.javeriana.models.Customer "1" o-> "0..*" com.javeriana.models.playList : Has a list (playLists) >
+com.javeriana.models.Customer "1" o--> "0..*" com.javeriana.models.Artist : Has a list (followedArtists) >
+com.javeriana.models.playList "1" o--> "0..*" com.javeriana.models.Song : Has a list (songs) >
+com.javeriana.models.Song "1" *-> "1..*" com.javeriana.models.Artist : Has a list (artists) >
+
+com.javeriana.services.ArtistService "1" o--> "*" com.javeriana.models.Artist : Has a list (artists) >
+com.javeriana.services.CustomerAdminService "1" o--> "*" com.javeriana.models.Customer : Has a list (customers) >
+com.javeriana.services.SongService "1" o-> "*" com.javeriana.models.Song : Has a list (songs) >
+com.javeriana.services.PlayListService "1" o-> "*" com.javeriana.models.playList : Has a list (playLists) >
+
+com.javeriana.controllers.AdminController "1" *--> "1" com.javeriana.services.ArtistService : Uses >
+com.javeriana.controllers.AdminController "1" *--> "1" com.javeriana.services.CustomerAdminService : Uses >
+com.javeriana.controllers.AdminController "1" *--> "1" com.javeriana.services.SongService : Uses >
+com.javeriana.controllers.AdminController "1" *--> "1" com.javeriana.services.PlayListService : Uses >
+
+com.javeriana.views.AdminView "1" *--> "1" com.javeriana.controllers.AdminController : Uses >
+
+Main -down-> AdminView : Creates >
+/'
+' Remover todo menos las clases dentro de models
+
+' Remover Main
+remove $Main
+
+' Remover Vistas
+remove $AdminView
+
+' Remover Controladores
+remove $AdminController
+
+' Remover Servicios
+remove $CustomerAdminService
+remove $SongService
+remove $PlayListService
+remove $ArtistService
+'/
+/'
+' Remover todo menos ArtistService y Artist
+
+' Remover Main
+remove $Main
+
+' Remover Vistas
+remove $AdminView
+
+' Remover Controladores
+remove $AdminController
+
+' Remover Servicios
+remove $CustomerAdminService
+remove $SongService
+remove $PlayListService
+
+' Remover Modelos
+remove $Customer
+remove $Song
+remove $PlayList
+'/
+
+/'
+' Remover todo menos CustomerAdminService y Customer
+
+' Remover Main
+remove $Main
+
+' Remover Vistas
+remove $AdminView
+
+' Remover Controladores
+remove $AdminController
+
+' Remover Servicios
+remove $SongService
+remove $PlayListService
+remove $ArtistService
+
+' Remover Modelos
+remove $Artist
+remove $Song
+remove $PlayList
+'/
+
+/'
+' Remover todo menos SongService y Song
+
+' Remover Main
+remove $Main
+
+' Remover Vistas
+remove $AdminView
+
+' Remover Controladores
+remove $AdminController
+
+' Remover Servicios
+remove $CustomerAdminService
+remove $PlayListService
+remove $ArtistService
+
+' Remover Modelos
+remove $Artist
+remove $Customer
+remove $PlayList
+'/
+
+/'
+' Remover todo menos PlayListService y PlayList
+
+' Remover Main
+remove $Main
+
+' Remover Vistas
+remove $AdminView
+
+' Remover Controladores
+remove $AdminController
+
+' Remover Servicios
+remove $CustomerAdminService
+remove $SongService
+remove $ArtistService
+
+' Remover Modelos
+remove $Artist
+remove $Customer
+remove $Song
+'/
+
+/'
+' Remover todo menos AdminController y los servicios
+
+' Remover Main
+remove $Main
+
+' Remover Vistas
+remove $AdminView
+
+' Remover Modelos
+remove $Artist
+remove $Customer
+remove $Song
+remove $PlayList
+'/
+
+/'
+' Remover todo menos AdminView y AdminController
+
+' Remover Main
+remove $Main
+
+' Remover Modelos
+remove $Artist
+remove $Customer
+remove $Song
+remove $PlayList
+
+' Remover Servicios
+remove $CustomerAdminService
+remove $SongService
+remove $PlayListService
+remove $ArtistService
+'/
+/'
+' Remover todo menos Main y AdminView
+
+' Remover Controladores
+remove $AdminController
+
+' Remover Servicios
+remove $CustomerAdminService
+remove $SongService
+remove $PlayListService
+remove $ArtistService
+
+' Remover Modelos
+remove $Artist
+remove $Customer
+remove $Song
+remove $PlayList
+'/
+
+@enduml
