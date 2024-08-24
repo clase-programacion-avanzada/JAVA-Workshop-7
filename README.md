@@ -1,4 +1,4 @@
-# Taller 9 - Relaciones entre clases y principio de responsabilidad única. 
+# Taller 7 - Relaciones entre clases y principio de responsabilidad única. 
 
 En este taller se trabajará con relaciones entre clases y el principio de responsabilidad única. Se espera que el estudiante pueda identificar las relaciones entre las clases y cómo estas se comunican entre sí.
 
