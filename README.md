@@ -88,10 +88,10 @@ public class Robot {
     private String name;
     private List<Component> components;
 
-    public Robot(String id, String name, List<Component> components) {
+    public Robot(String id, String name) {
         this.id = id;
         this.name = name;
-        this.components = components;
+        this.components = new ArrayList<>();
     }
 
     // Getters and Setters
@@ -101,7 +101,7 @@ public class Robot {
         // Implementación pregunta 9
     }
 
-    public bool removeComponent(String id) {
+    public boolean removeComponent(String id) {
         Component componentToBeRemoved = getComponentById(id);
         if (componentToBeRemoved == null) {
             return false;
