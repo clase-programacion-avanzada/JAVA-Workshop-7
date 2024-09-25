@@ -1,11 +1,5 @@
 package com.javeriana;
 
-import com.javeriana.controller.AdminController;
-import com.javeriana.service.ArtistService;
-import com.javeriana.service.CustomerAdminService;
-import com.javeriana.service.PlaylistService;
-import com.javeriana.service.SongService;
-import com.javeriana.view.AdminView;
 import java.util.Scanner;
 
 public class Main {
@@ -13,7 +7,7 @@ public class Main {
 
         System.out.println("Iniciando la aplicación...");
         System.out.println("Creando servicios");
-        //Create Services
+        /*
         PlaylistService playlistService = new PlaylistService();
         SongService songService = new SongService();
         ArtistService artistService = new ArtistService();
@@ -27,7 +21,8 @@ public class Main {
         //Create Views
         Scanner scanner = new Scanner(System.in);
         AdminView adminView = new AdminView(adminController, scanner);
-
+        */
+        Scanner scanner = new Scanner(System.in);
         //Show Menu
         int option = 0;
 
@@ -43,7 +38,7 @@ public class Main {
             option = Integer.parseInt(scanner.nextLine());
 
             switch (option) {
-                case 1 -> adminView.showMenu();
+                case 1 -> System.out.println("Implemente la funcionalidad");//adminView.showMenu();
 
                 case 0 -> System.out.println("Saliendo de la aplicación...");
                 default -> System.out.println("Opción no válida.");
