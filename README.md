@@ -6,19 +6,19 @@ En este taller se trabajará con relaciones entre clases y el principio de respo
 
 1. [Preguntas teóricas](#preguntas-teóricas)
 2. [Enunciado](#enunciado)
-    1. [Paquete Models](#paquete-models)
+    1. [Paquete model](#paquete-model)
         1. [Clase `Artist`](#clase-artist)
         2. [Clase `Customer`](#clase-customer)
-        3. [Clase `PlayList`](#clase-playlist)
+        3. [Clase `Playlist`](#clase-playlist)
         4. [Clase `Song`](#clase-song)
-    2. [Paquete Services](#paquete-services)
+    2. [Paquete service](#paquete-service)
         1. [Clase `ArtistService`](#clase-artistservice)
         2. [Clase `CustomersAdminService`](#clase-customerservice)
         3. [Clase `SongService`](#clase-songservice)
-        4. [Clase `PlayListService`](#clase-playlistservice)
-    3. [Paquete Controllers](#paquete-controllers)
+        4. [Clase `PlaylistService`](#clase-playlistservice)
+    3. [Paquete controller](#paquete-controller)
        1. [Clase `AdminController`](#clase-admincontroller)
-    4. [Paquete Views](#paquete-views)
+    4. [Paquete view](#paquete-view)
        1. [Clase `AdminView`](#clase-adminview)
     5. [Clases sin paquete](#clases-sin-paquete)
         1. [Clase `Main`](#clase-main)
@@ -180,12 +180,12 @@ Una vez que haya abierto el proyecto, se crearán las clases necesarias para tra
 
 ### Paquetes
 
-#### Paquete Models
+#### Paquete model
 
-El paquete `Models` contiene las clases que representan las entidades principales de la aplicación de música.
+El paquete `model` contiene las clases que representan las entidades principales de la aplicación de música.
 Una entidad, en el contexto de la programación y el desarrollo de software, se refiere a un objeto o concepto que es identificable.
 En términos simples, una entidad es una instancia única de un objeto.
-En este programa, las entidades son: Artist, Customer, PlayList y Song. A continuación, se describen las clases que deben estar en este paquete. Además, encontrará un diagrama de clases que muestra la relación entre las clases de este paquete.
+En este programa, las entidades son: Artist, Customer, Playlist y Song. A continuación, se describen las clases que deben estar en este paquete. Además, encontrará un diagrama de clases que muestra la relación entre las clases de este paquete.
 
 ![Workshop7-diagram-models-spotify.png](assets/workshop7-diagram-models-spotify.png)
 
@@ -205,30 +205,43 @@ En la clase customer, se deben agregar los siguientes atributos:
 
 - `followedArtists`: Este atributo es una lista de la clase `Artist`, que representa los artistas que el cliente sigue.
 
-- `playLists`: Este atributo es una lista de la clase `PlayList`, que representa las listas de reproducción del cliente.
+- `playlists`: Este atributo es una lista de la clase `Playlist`, que representa las listas de reproducción del cliente.
 ###### Constructores
 
 La clase `Customer` tendrá dos constructores, ya debe estar implementado uno de ellos, se debe implementar el siguiente:
 
-1. `public Customer(UUID id, String username, String password, String name, String lastName, int age, List<Artist> followedArtists, List<PlayList> playLists)`: Este constructor crea un objeto `Customer` con los atributos proporcionados.
+1. `public Customer(UUID id, String username, String password, String name, String lastName, int age, List<Artist> followedArtists, List<Playlist> playlists)`: Este constructor crea un objeto `Customer` con los atributos proporcionados.
+
+###### Métodos
+
+1. `public void removePlayList(UUID id)`: Este método elimina una lista de reproducción de la lista de listas de reproducción del cliente. Debe buscar la lista de reproducción con el `id` proporcionado y eliminarla de la lista de listas de reproducción del cliente si existe.
+2. `private Playlist getPlaylistById(UUID id)`: Este método devuelve la lista de reproducción con el `id` proporcionado, si no existe, devuelve `null`.
+3. `private Artist getArtistById(UUID id)`: Este método devuelve el artista con el `id` proporcionado, si no existe, devuelve `null`.
+4. `public void removeArtist(UUID id)`: Este método elimina un artista de la lista de artistas seguidos del cliente. Debe buscar el artista con el `id` proporcionado y eliminarlo de la lista de artistas seguidos del cliente si existe.
 
 [Volver al índice](#indice)
 
-#### Clase PlayList
+#### Clase Playlist
 
-La clase `PlayList` representa una lista de reproducción en una aplicación de música.
+La clase `Playlist` representa una lista de reproducción en una aplicación de música.
 
 ###### Atributos
 
-En la clase `PlayList` se deben agregar los siguientes atributos:
+En la clase `Playlist` se deben agregar los siguientes atributos:
 
 - `songs`: Este atributo es una lista de la clase `Song`, que representa las canciones de la lista de reproducción.'
 
 ###### Constructores
 
-La clase `PlayList` tendrá dos constructores, ya debe estar implementado uno de ellos, se debe implementar el siguiente:
+La clase `Playlist` tendrá dos constructores, ya debe estar implementado uno de ellos, se debe implementar el siguiente:
 
-1. `public PlayList(UUID id, String name, List<Song> songs)`: Este constructor crea un objeto `PlayList` con los atributos proporcionados.
+1. `public Playlist(UUID id, String name, List<Song> songs)`: Este constructor crea un objeto `Playlist` con los atributos proporcionados.
+
+###### Métodos
+
+1. `private Song getSongById(UUID id)`: Este método devuelve la canción con el `id` proporcionado, si no existe, devuelve `null`.
+2. `public void removeSong(UUID id)`: Este método elimina una canción de la lista de reproducción. Debe buscar la canción con el `id` proporcionado y eliminarla de la lista de canciones de la lista de reproducción si existe.
+3. `public void removeSongsFromArtist(UUID id)`: Este método elimina las canciones de un artista de la lista de reproducción. Debe buscar el artista con el `id` proporcionado y eliminar las canciones del artista de la lista de reproducción.
 
 [Volver al índice](#indice)
 
@@ -247,11 +260,15 @@ La clase `Song` tendrá dos constructores, ya debe estar implementado uno de ell
 
 1. `public Song(UUID id, String name, String genre, int durationInSeconds, String album, List<Artist> artists)`: Este constructor crea un objeto `Song` con los atributos proporcionados.
 
+###### Métodos
+
+1. `public boolean hasArtist(UUID id)`: Este método devuelve `true` si la canción tiene un artista con el `id` proporcionado, de lo contrario, devuelve `false`.
+
 [Volver al índice](#indice)
 
-#### Paquete Services
+#### Paquete service
 
-El paquete `Services` contiene las clases que representan los servicios que se pueden realizar en la aplicación de música. El motivo de crear estas clases es separar la lógica de negocio de las clases de modelo.
+El paquete `service` contiene las clases que representan los servicios que se pueden realizar en la aplicación de música. El motivo de crear estas clases es separar la lógica de negocio de las clases de modelo.
 
 En el futuro, estas clases tendrán en sus métodos, la lógica de negocio de la aplicación, de momento solamente se encargarán de hacer operaciones básicas.
 
@@ -271,10 +288,12 @@ La clase `ArtistService` representa el servicio de artistas en una aplicación d
 ###### Métodos
 
 1. `public List<Artist> getArtists()` : Este método devuelve una copia de la lista de artistas de la aplicación.
-2. `public void addArtist(String name)` : Este método agrega un artista a la lista de la aplicación. Debe crear un objeto de la clase `Artist` con el nombre proporcionado y agregarlo a la lista de artistas.
-3. `public void removeArtist(String id)` : Este método elimina un artista de la lista de la aplicación. Debe buscar el artista con el `id` proporcionado y eliminarlo de la lista de artistas.
-4. `public Artist getArtistById(String id)` : Este método devuelve el artista con el `id` proporcionado, si no existe, devuelve `null`.
+2. `public Artist addArtist(String name)` : Este método agrega un artista a la lista de la aplicación. Debe crear un objeto de la clase `Artist` con el nombre proporcionado y agregarlo a la lista de artistas, además, debe retornar el artista creado.
+3. `public boolean removeArtist(UUID id)` : Este método elimina un artista de la lista de la aplicación. Debe buscar el artista con el `id` proporcionado y eliminarlo de la lista de artistas. Si el artista fue eliminado, debe retornar `true`, de lo contrario, debe retornar `false`.
+4. `private Artist getArtistById(UUID id)` : Este método devuelve el artista con el `id` proporcionado, si no existe, devuelve `null`.
 5. `public List<String> getArtistsToString()` : Este método devuelve una lista de cadenas de caracteres con la información de todos los artistas de la aplicación. Cada cadena de caracteres debe tener el siguiente formato provisto por el método `toString` de la clase `Artist`. Este método se usará para devolver la información de los artistas en la vista, a través del llamado del servicio en el controlador.
+6. `public List<Artist> getArtistsByIds(List<UUID> artists)` : Este método devuelve una lista de artistas con los `id` proporcionados. Si no existe un artista con alguno de los `id` proporcionados, no debe ser incluido en la lista.
+
 
 ###### Constructores
 
@@ -296,9 +315,11 @@ La clase `CustomersAdminService` representa el servicio de clientes en una aplic
 
 1. `public List<Customer> getCustomers()` : Este método devuelve una copia de la lista de clientes de la aplicación.
 2. `public void addCustomer(String username, String password, String name, String lastName, int age)` : Este método agrega un cliente a la lista de la aplicación. Debe crear un objeto de la clase `Customer` con los datos proporcionados y agregarlo a la lista de clientes. Las listas de artistas seguidos y listas de reproducción deben crearse vacías
-3. `public void removeCustomer(String id)` : Este método elimina un cliente de la lista de la aplicación. Debe buscar el cliente con el `id` proporcionado y eliminarlo de la lista de clientes.
-4. `public Customer getCustomerById(String id)` : Este método devuelve el cliente con el `id` proporcionado, si no existe, devuelve `null`.
+3. `public boolean removeCustomer(UUID id)` : Este método elimina un cliente de la lista de la aplicación. Debe buscar el cliente con el `id` proporcionado y eliminarlo de la lista de clientes.
+4. `public Customer getCustomerById(UUID id)` : Este método devuelve el cliente con el `id` proporcionado, si no existe, devuelve `null`.
 5. `public List<String> getCustomersToString()` : Este método devuelve una lista de cadenas de caracteres con la información de todos los clientes de la aplicación. Cada cadena de caracteres debe tener el siguiente formato provisto por el método `toString` de la clase `Customer`. Este método se usará para devolver la información de los clientes en la vista, a través del llamado del servicio en el controlador.
+6. `public boolean removePlaylistFromCustomers(UUID playlistId)` : Este método elimina una lista de reproducción de todos los clientes. Debe buscar la lista de reproducción con el `id` proporcionado y eliminarla de las listas de reproducción de los clientes.
+7. `public void removeArtistFromCustomers(UUID artistId)` : Este método elimina un artista de las listas de artistas seguidos de los clientes. Debe buscar el artista con el `id` proporcionado y eliminarlo de las listas de artistas seguidos de los clientes.
 
 ###### Constructores
 
@@ -321,9 +342,10 @@ La clase `SongService` representa el servicio de canciones en una aplicación de
 
 1. `public List<Song> getSongs()` : Este método devuelve una copia de la lista de canciones de la aplicación.
 2. `public void addSong(String name, String genre, int durationInSeconds, String album, List<Artist> artists)` : Este método agrega una canción a la lista de la aplicación. Debe crear un objeto de la clase `Song` con los datos proporcionados y agregarlo a la lista de canciones.
-3. `public void removeSong(String id)` : Este método elimina una canción de la lista de la aplicación. Debe buscar la canción con el `id` proporcionado y eliminarla de la lista de canciones.
-4. `public Song getSongById(String id)` : Este método devuelve la canción con el `id` proporcionado, si no existe, devuelve `null`.
+3. `public boolean removeSong(UUID id)` : Este método elimina una canción de la lista de la aplicación. Debe buscar la canción con el `id` proporcionado y eliminarla de la lista de canciones. Debe retornar `true` si la canción fue eliminada, de lo contrario, debe retornar `false`.
+4. `public Song getSongById(UUID id)` : Este método devuelve la canción con el `id` proporcionado, si no existe, devuelve `null`.
 5. `public List<String> getSongsToString()` : Este método devuelve una lista de cadenas de caracteres con la información de todas las canciones de la aplicación. Cada cadena de caracteres debe tener el siguiente formato provisto por el método `toString` de la clase `Song`. Este método se usará para devolver la información de las canciones en la vista, a través del llamado del servicio en el controlador.
+6. `public void removeSongsOfArtist(UUID artistId)` : Este método elimina las canciones de un artista de la lista de canciones. Debe buscar el artista con el `id` proporcionado y eliminar las canciones del artista de la lista de canciones.
 
 ###### Constructores
 
@@ -331,80 +353,83 @@ La clase `SongService` tendrá un constructor que inicializa la lista de cancion
 
 [Volver al índice](#indice)
 
-##### Clase `PlayListService`
+##### Clase `PlaylistService`
 
 ![workshop7-diagram-playlistService-spotify.png](assets/workshop7-diagram-playlistService-spotify.png)
 
 
-La clase `PlayListService` representa el servicio de listas de reproducción en una aplicación de música. Esta clase debe ser implementada siguiendo la misma estructura que la clase `ArtistService`.
+La clase `PlaylistService` representa el servicio de listas de reproducción en una aplicación de música. Esta clase debe ser implementada siguiendo la misma estructura que la clase `ArtistService`.
 
 ###### Atributos
 
-1. `playLists`: Este atributo es una lista de la clase `PlayList`, que representa las listas de reproducción de la aplicación.
+1. `playlists`: Este atributo es una lista de la clase `Playlist`, que representa las listas de reproducción de la aplicación.
 
 ###### Métodos
 
-1. `public List<PlayList> getPlayLists()` : Este método devuelve una copia de la lista de listas de reproducción de la aplicación.
-2. `public PlayList addPlayList(String name)` : Este método agrega una lista de reproducción a la lista de la aplicación. Debe crear un objeto de la clase `PlayList` con el nombre proporcionado, agregarlo a la lista de listas de reproducción y retornar la playList creada.
-3. `public void removePlayList(String id)` : Este método elimina una lista de reproducción de la lista de la aplicación. Debe buscar la lista de reproducción con el `id` proporcionado y eliminarla de la lista de listas de reproducción.
-4. `public PlayList getPlayListById(String id)` : Este método devuelve la lista de reproducción con el `id` proporcionado, si no existe, devuelve `null`.
-5. `public List<String> getPlayListsToString()` : Este método devuelve una lista de cadenas de caracteres con la información de todas las listas de reproducción de la aplicación. Cada cadena de caracteres debe tener el siguiente formato provisto por el método `toString` de la clase `PlayList`. Este método se usará para devolver la información de las listas de reproducción en la vista, a través del llamado del servicio en el controlador.
+1. `public List<Playlist> getPlaylists()` : Este método devuelve una copia de la lista de listas de reproducción de la aplicación.
+2. `public Playlist addPlaylist(String name)` : Este método agrega una lista de reproducción a la lista de la aplicación. Debe crear un objeto de la clase `Playlist` con el nombre proporcionado, agregarlo a la lista de listas de reproducción y retornar la playlist creada.
+3. `public boolean removePlaylist(UUID id)` : Este método elimina una lista de reproducción de la lista de la aplicación. Debe buscar la lista de reproducción con el `id` proporcionado y eliminarla de la lista de listas de reproducción. Debe retornar `true` si la lista de reproducción fue eliminada, de lo contrario, debe retornar `false`.
+4. `public Playlist getPlaylistById(UUID id)` : Este método devuelve la lista de reproducción con el `id` proporcionado, si no existe, devuelve `null`.
+5. `public List<String> getPlaylistsToString()` : Este método devuelve una lista de cadenas de caracteres con la información de todas las listas de reproducción de la aplicación. Cada cadena de caracteres debe tener el siguiente formato provisto por el método `toString` de la clase `Playlist`. Este método se usará para devolver la información de las listas de reproducción en la vista, a través del llamado del servicio en el controlador.
+6. `public void removeSongsOfArtist(UUID artistId)` : Este método elimina las canciones de un artista de las listas de reproducción. Debe buscar el artista con el `id` proporcionado y eliminar las canciones del artista de las listas de reproducción.
+7. `public void removeSongFromPlaylists(UUID uuid)` : Este método elimina una canción de todas las listas de reproducción. Debe buscar la canción con el `id` proporcionado y eliminarla de las listas de reproducción.
 
 ###### Constructores
 
-La clase `PlayListService` tendrá un constructor que inicializa la lista de listas de reproducción vacía.
+La clase `PlaylistService` tendrá un constructor que inicializa la lista de listas de reproducción vacía.
 
 [Volver al índice](#indice)
 
-### Paquete Controllers
+### Paquete controller
 
-El paquete `Controllers` contiene las clases que representan los controladores de la aplicación de música. Estas clases se encargan de recibir las peticiones del cliente y comunicarse con los servicios para realizar las operaciones solicitadas.
+El paquete `controller` contiene las clases que representan los controladores de la aplicación de música. Estas clases se encargan de recibir las peticiones del cliente y comunicarse con los servicios para realizar las operaciones solicitadas.
+Esto implica que estas clases deben validar los datos proporcionados por el cliente antes de enviarlos a los servicios, o transformar los datos para que puedan ser procesados por los servicios (como convertir un `String` a un `UUID`).
 
-A continuación, se describen las clases que deben estar en este paquete. Además, encontrará un diagrama de clases que muestra la relación entre las clases de este paquete con las clases del paquete `Services`.
+A continuación, se describen las clases que deben estar en este paquete. Además, encontrará un diagrama de clases que muestra la relación entre las clases de este paquete con las clases del paquete `service`.
 
 #### Clase `AdminController`
 
 ![workshop7-diagram-adminController-spotify.png](assets/workshop7-diagram-adminController-spotify.png)
 
 
-La clase `AdminController` representa el controlador de administrador en una aplicación de música. Esta clase debe ser implementada siguiendo la misma estructura usada para agregar un artista.
+La clase `AdminController` representa el controlador de administrador en una aplicación de música.
 
 ###### Atributos
 
 1. `artistService`: Este atributo es un objeto de la clase `ArtistService`, que representa el servicio de artistas de la aplicación.
 2. `customersAdminService`: Este atributo es un objeto de la clase `CustomersAdminService`, que representa el servicio de clientes de la aplicación.
 3. `songService`: Este atributo es un objeto de la clase `SongService`, que representa el servicio de canciones de la aplicación.
-4. `playListService`: Este atributo es un objeto de la clase `PlayListService`, que representa el servicio de listas de reproducción de la aplicación.
+4. `playlistService`: Este atributo es un objeto de la clase `PlaylistService`, que representa el servicio de listas de reproducción de la aplicación.
 
 ###### Métodos
 
 1. `public void addArtist(String name)` : Este método agrega un artista a la lista de la aplicación. Debe llamar al método `addArtist` del atributo `artistService` con el nombre proporcionado.
 2. `public void removeArtist(String id)` : Este método elimina un artista de la lista de la aplicación. Debe llamar al método `removeArtist` del atributo `artistService` con el `id` proporcionado. Si artista fue eliminado, debe eliminar las canciones del artista, las canciones eliminadas deben ser eliminadas de las listas de reproducción y de las listas de artistas seguidos de los clientes.
 3. `public void addCustomer(String username, String password, String name, String lastName, int age)` : Este método agrega un cliente a la lista de la aplicación. Debe llamar al método `addCustomer` del atributo `customersAdminService` con los datos proporcionados.
-4. `public void removeCustomer(String id)` : Este método elimina un cliente de la lista de la aplicación. Debe llamar al método `removeCustomer` del atributo `customersAdminService` con el `id` proporcionado. Si cliente fue eliminado, debe eliminar las listas de reproducción del cliente.
+4. `public void removeCustomer(String id)` : Este método elimina un cliente de la lista de la aplicación. Debe llamar al método `removeCustomer` del atributo `customersAdminService` con el `id` proporcionado.
 5. `public void addSong(String name, String genre, int durationInSeconds, String album, List<String> artists)` : Este método agrega una canción a la lista de la aplicación. Debe llamar al método `addSong` del atributo `songService` con los datos proporcionados.
 6. `public void removeSong(String id)` : Este método elimina una canción de la lista de la aplicación. Debe llamar al método `removeSong` del atributo `songService` con el `id` proporcionado. Si la canción fue eliminada, debe eliminar la canción de las listas de reproducción.
-7. `public void addPlayList(String name)` : Este método agrega una lista de reproducción a la lista de la aplicación. Debe llamar al método `addPlayList` del atributo `playListService` con el nombre proporcionado.
-8. `public void removePlayList(String id)` : Este método elimina una lista de reproducción de la lista de la aplicación. Debe llamar al método `removePlayList` del atributo `playListService` con el `id` proporcionado. Si la lista de reproducción fue eliminada, debe eliminar la lista de reproducción de los clientes.
+7. `public void addPlaylist(String name)` : Este método agrega una lista de reproducción a la lista de la aplicación. Debe llamar al método `addPlaylist` del atributo `playlistService` con el nombre proporcionado.
+8. `public void removePlaylist(String id)` : Este método elimina una lista de reproducción de la lista de la aplicación. Debe llamar al método `removePlaylist` del atributo `playlistService` con el `id` proporcionado. Si la lista de reproducción fue eliminada, debe eliminar la lista de reproducción de los clientes.
 9. `public List<String> getCustomersToString()` : Este método devuelve una lista de cadenas de caracteres con la información de todos los clientes de la aplicación. Debe llamar al método `getCustomersToString` del atributo `customersAdminService`. Cada cadena de caracteres debe tener el siguiente formato provisto por el método `toString` de la clase `Customer`. Este método se usará para devolver la información de los clientes en la vista.
 10. `public List<String> getSongsToString()` : Este método devuelve una lista de cadenas de caracteres con la información de todas las canciones de la aplicación. Debe llamar al método `getSongsToString` del atributo `songService`. Cada cadena de caracteres debe tener el siguiente formato provisto por el método `toString` de la clase `Song`. Este método se usará para devolver la información de las canciones en la vista.
 11. `public List<String> getArtistsToString()` : Este método devuelve una lista de cadenas de caracteres con la información de todos los artistas de la aplicación. Debe llamar al método `getArtistsToString` del atributo `artistService`. Cada cadena de caracteres debe tener el siguiente formato provisto por el método `toString` de la clase `Artist`. Este método se usará para devolver la información de los artistas en la vista.
-12. `public List<String> getPlayListsToString()` : Este método devuelve una lista de cadenas de caracteres con la información de todas las listas de reproducción de la aplicación. Debe llamar al método `getPlayListsToString` del atributo `playListService`. Cada cadena de caracteres debe tener el siguiente formato provisto por el método `toString` de la clase `PlayList`. Este método se usará para devolver la información de las listas de reproducción en la vista.
+12. `public List<String> getPlaylistsToString()` : Este método devuelve una lista de cadenas de caracteres con la información de todas las listas de reproducción de la aplicación. Debe llamar al método `getPlaylistsToString` del atributo `playlistService`. Cada cadena de caracteres debe tener el siguiente formato provisto por el método `toString` de la clase `Playlist`. Este método se usará para devolver la información de las listas de reproducción en la vista.
 
 ###### Constructores
 
 La clase `AdminController` tendrá un constructor que inicializa los atributos con los servicios correspondientes.
 
-- `public AdminController(ArtistService artistService, CustomersAdminService customersAdminService, SongService songService, PlayListService playListService)`: Este constructor crea un objeto `AdminController` con los servicios proporcionados.
+- `public AdminController(ArtistService artistService, CustomersAdminService customersAdminService, SongService songService, PlaylistService playlistService)`: Este constructor crea un objeto `AdminController` con los servicios proporcionados.
 
 [Volver al índice](#indice)
 
-#### Paquete Views
+#### Paquete view
 
-El paquete `Views` contiene las clases que representan las vistas de la aplicación de música. Estas clases se encargan de mostrar la información al cliente y de recibir los datos que el cliente proporciona.
+El paquete `view` contiene las clases que representan las vistas de la aplicación de música. Estas clases se encargan de mostrar la información al cliente y de recibir los datos que el cliente proporciona.
 Esto quiere decir que estas clases son las únicas que pueden interactuar con el cliente, es decir, leer y escribir en la consola.
 
-A continuación, se describen las clases que deben estar en este paquete. Además, encontrará un diagrama de clases que muestra la relación entre las clases de este paquete con las clases del paquete `Controllers`.
+A continuación, se describen las clases que deben estar en este paquete. Además, encontrará un diagrama de clases que muestra la relación entre las clases de este paquete con las clases del paquete `controller`.
 
 #### Clase `AdminView`
 
@@ -422,7 +447,7 @@ La clase `AdminView` representa la vista de administrador en una aplicación de 
 1. `public void showMenu()`: Este método muestra un menú con las opciones disponibles para el administrador. Las opciones son:
     ```
     1. Crear artista y agregarlo a la base de datos.
-    2. Eliminar artista de la base de datos, y las canciones en las que exista.
+    2. Eliminar artista de la base de datos.
     3. Crear canción y agregarla a la base de datos.
     4. Eliminar canción de la base de datos y las playlists en las que exista.
     5. Crear Cliente y agregarlo a la base de datos.
@@ -433,7 +458,7 @@ La clase `AdminView` representa la vista de administrador en una aplicación de 
     10. Ver la lista de canciones.
     11. Ver la lista de artistas.
     12. Ver la lista de playlists.
-    13. Salir.
+    0. Volver al menú principal.
     ```
 
 2. `public void addArtist()`: Este método solicita al usuario el nombre del artista y llama al método `addArtist` del atributo `adminController` con el nombre proporcionado.
@@ -442,12 +467,12 @@ La clase `AdminView` representa la vista de administrador en una aplicación de 
 5. `public void removeCustomer()`: Este método solicita al usuario el `id` del cliente y llama al método `removeCustomer` del atributo `adminController` con el `id` proporcionado.
 6. `public void addSong()`: Este método solicita al usuario los datos de la canción y llama al método `addSong` del atributo `adminController` con los datos proporcionados.
 7. `public void removeSong()`: Este método solicita al usuario el `id` de la canción y llama al método `removeSong` del atributo `adminController` con el `id` proporcionado.
-8. `public void addPlayList()`: Este método solicita al usuario el nombre de la lista de reproducción y llama al método `addPlayList` del atributo `adminController` con el nombre proporcionado.
-9. `public void removePlayList()`: Este método solicita al usuario el `id` de la lista de reproducción y llama al método `removePlayList` del atributo `adminController` con el `id` proporcionado.
+8. `public void addPlaylist()`: Este método solicita al usuario el nombre de la lista de reproducción y llama al método `addPlaylist` del atributo `adminController` con el nombre proporcionado.
+9. `public void removePlaylist()`: Este método solicita al usuario el `id` de la lista de reproducción y llama al método `removePlaylist` del atributo `adminController` con el `id` proporcionado.
 10. `public void showCustomers()`: Este método llama al método `getCustomersToString` del atributo `adminController` y muestra en pantalla la lista de clientes.
 11. `public void showSongs()`: Este método llama al método `getSongsToString` del atributo `adminController` y muestra en pantalla la lista de canciones.
 12. `public void showArtists()`: Este método llama al método `getArtistsToString` del atributo `adminController` y muestra en pantalla la lista de artistas.
-13. `public void showPlayLists()`: Este método llama al método `getPlayListsToString` del atributo `adminController` y muestra en pantalla la lista de listas de reproducción.
+13. `public void showPlaylists()`: Este método llama al método `getPlaylistsToString` del atributo `adminController` y muestra en pantalla la lista de listas de reproducción.
 
 ###### Constructores
 
@@ -468,14 +493,14 @@ El método `main` se debe modificar para que llame a los métodos de la clase `A
 2. Eliminar un objeto de la clase `Artist` con el `id` que el cliente le indique. En este caso, se debe mostrar una lista de todos los artistas que existen en el sistema, de tal forma que el usuario pueda elegir el `id` del artista a eliminar. Debe llamar al método `removeArtist` del atributo `adminController` con el `id` proporcionado y cumplir con las restricciones indicadas en la descripción de la clase `AdminController`.
 3. Crear un objeto de la clase `Customer` con los datos que el cliente le indique, en este caso la lista de artistas seguidos y las listas de reproducción deben crearse vacías. Debe llamar al método `addCustomer` del atributo `adminController` con los datos proporcionados.
 4. Eliminar un objeto de la clase `Customer` con el `id` que el cliente le indique. En este caso, se debe mostrar una lista de todos los clientes que existen en el sistema, de tal forma que el usuario pueda elegir el `id` del cliente a eliminar. Debe llamar al método `removeCustomer` del atributo `adminController` con el `id` proporcionado y cumplir con las restricciones indicadas en la descripción de la clase `AdminController`.
-5. Crear un objeto de la clase `PlayList` con el nombre que el cliente le indique, la playList debe crearse con la lista de canciones vacía. Debe llamar al método `addPlayList` del atributo `adminController` con el nombre proporcionado.
-6. Eliminar un objeto de la clase `PlayList` con el `id` que el cliente le indique. En este caso, se debe mostrar una lista de todas las listas de reproducción que existen en el sistema, de tal forma que el usuario pueda elegir el `id` de la lista de reproducción a eliminar. Debe llamar al método `removePlayList` del atributo `adminController` con el `id` proporcionado y cumplir con las restricciones indicadas en la descripción de la clase `AdminController`.
+5. Crear un objeto de la clase `Playlist` con el nombre que el cliente le indique, la playlist debe crearse con la lista de canciones vacía. Debe llamar al método `addPlaylist` del atributo `adminController` con el nombre proporcionado.
+6. Eliminar un objeto de la clase `Playlist` con el `id` que el cliente le indique. En este caso, se debe mostrar una lista de todas las listas de reproducción que existen en el sistema, de tal forma que el usuario pueda elegir el `id` de la lista de reproducción a eliminar. Debe llamar al método `removePlaylist` del atributo `adminController` con el `id` proporcionado y cumplir con las restricciones indicadas en la descripción de la clase `AdminController`.
 7. Crear un objeto de la clase `Song` con los datos que el cliente le indique, se deben mostrar en el menú todos los artistas que existen en el sistema, de tal forma que el usuario pueda elegir el id del artista elegido. Debe llamar al método `addSong` del atributo `adminController` con los datos proporcionados.
 8. Eliminar un objeto de la clase `Song` con el `id` que el cliente le indique. En este caso, se debe mostrar una lista de todas las canciones que existen en el sistema, de tal forma que el usuario pueda elegir el `id` de la canción a eliminar. Debe llamar al método `removeSong` del atributo `adminController` con el `id` proporcionado y cumplir con las restricciones indicadas en la descripción de la clase `AdminController`.
 9. Mostrar en pantalla la lista de clientes. Debe llamar al método `getCustomersToString` del atributo `adminController`.
 10. Mostrar en pantalla la lista de canciones. Debe llamar al método `getSongsToString` del atributo `adminController`.
 11. Mostrar en pantalla la lista de artistas. Debe llamar al método `getArtistsToString` del atributo `adminController`.
-12. Mostrar en pantalla la lista de listas de reproducción. Debe llamar al método `getPlayListsToString` del atributo `adminController`.
+12. Mostrar en pantalla la lista de listas de reproducción. Debe llamar al método `getPlaylistsToString` del atributo `adminController`.
 
 En todos los casos, los datos que el cliente le indique deben ser ingresados por consola con excepción del `id` que se generará automáticamente.
 

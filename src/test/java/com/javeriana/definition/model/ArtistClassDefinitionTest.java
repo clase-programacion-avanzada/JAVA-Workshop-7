@@ -1,8 +1,10 @@
-package models;
+package com.javeriana.definition.model;
 
-import helpers.AttributeData;
-import helpers.ClassDefinitionHelper;
-import helpers.ClassDefinitionTest;
+import static com.javeriana.enums.ProjectStructure.ARTIST;
+
+import com.javeriana.classDefinition.AttributeData;
+import com.javeriana.classDefinition.DefinitionTester;
+import com.javeriana.classDefinition.ClassDefinitionTest;
 import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
@@ -11,14 +13,14 @@ public class ArtistClassDefinitionTest extends ClassDefinitionTest {
 
     @Override
     protected String getClassName() {
-        return "com.javeriana.models.Artist";
+        return ARTIST.getClassName();
     }
 
     @Override
     protected List<AttributeData> getExpectedAttributes() {
         return Arrays.asList(
-            new AttributeData("id", "UUID", ClassDefinitionHelper.PRIVATE_MODIFIER),
-            new AttributeData("name", "String", ClassDefinitionHelper.PRIVATE_MODIFIER)
+            new AttributeData("id", "UUID", DefinitionTester.PRIVATE_MODIFIER, false),
+            new AttributeData("name", "String", DefinitionTester.PRIVATE_MODIFIER)
         );
     }
 
@@ -28,4 +30,5 @@ public class ArtistClassDefinitionTest extends ClassDefinitionTest {
             new Class[]{String.class},
             new Class[]{UUID.class, String.class});
     }
+
 }

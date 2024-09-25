@@ -17,6 +17,21 @@ dependencies {
 
 }
 
+application {
+    mainClassName = 'com.javeriana.Main'
+
+}
+
+java {
+    sourceCompatibility = JavaVersion.VERSION_17
+    targetCompatibility = JavaVersion.VERSION_17
+}
+
+
+test {
+    useJUnitPlatform()
+}
+
 tasks.register('customerClassDefinitionTest', Test) {
     useJUnitPlatform()
     failFast = true
@@ -81,21 +96,94 @@ tasks.register('songClassDefinitionTest', Test) {
     }
 }
 
-
-application {
-    mainClassName = 'com.javeriana.Main'
-
-}
-
-java {
-    sourceCompatibility = JavaVersion.VERSION_17
-    targetCompatibility = JavaVersion.VERSION_17
-}
-
-
-test {
+tasks.register('artistServiceClassDefinitionTest', Test) {
     useJUnitPlatform()
+    failFast = true
+    include '**/ArtistServiceClassDefinitionTest.*'
+    testClassesDirs = testing.suites.test.sources.output.classesDirs
+    classpath = testing.suites.test.sources.runtimeClasspath
+
+    testLogging {
+        events "failed"
+        exceptionFormat "full"
+        showExceptions true
+        showCauses true
+        showStackTraces false
+    }
+}
+
+tasks.register('songServiceClassDefinitionTest', Test) {
+    useJUnitPlatform()
+    failFast = true
+    include '**/SongServiceClassDefinitionTest.*'
+    testClassesDirs = testing.suites.test.sources.output.classesDirs
+    classpath = testing.suites.test.sources.runtimeClasspath
+
+    testLogging {
+        events "failed"
+        exceptionFormat "full"
+        showExceptions true
+        showCauses true
+        showStackTraces false
+    }
+}
+
+tasks.register('playlistsServiceClassDefinitionTest', Test) {
+    useJUnitPlatform()
+    failFast = true
+    include '**/PlaylistsServiceClassDefinitionTest.*'
+    testClassesDirs = testing.suites.test.sources.output.classesDirs
+    classpath = testing.suites.test.sources.runtimeClasspath
+
+    testLogging {
+        events "failed"
+        exceptionFormat "full"
+        showExceptions true
+        showCauses true
+        showStackTraces false
+    }
+}
+
+tasks.register('customerAdminServiceClassDefinitionTest', Test) {
+    useJUnitPlatform()
+    failFast = true
+    include '**/CustomerAdminServiceClassDefinitionTest.*'
+    testClassesDirs = testing.suites.test.sources.output.classesDirs
+    classpath = testing.suites.test.sources.runtimeClasspath
+
+    testLogging {
+        events "failed"
+        exceptionFormat "full"
+        showExceptions true
+        showCauses true
+        showStackTraces false
+    }
+}
+
+tasks.register('adminControllerClassDefinitionTest', Test) {
+    useJUnitPlatform()
+    failFast = true
+    include '**/AdminControllerClassDefinitionTest.*'
+    testClassesDirs = testing.suites.test.sources.output.classesDirs
+    classpath = testing.suites.test.sources.runtimeClasspath
+
+    testLogging {
+        events "failed"
+        exceptionFormat "full"
+        showExceptions true
+        showCauses true
+        showStackTraces false
+    }
 }
 
 run.dependsOn check
-check.dependsOn artistClassDefinitionTest, customerClassDefinitionTest, playListClassDefinitionTest, songClassDefinitionTest
+check.dependsOn artistClassDefinitionTest,
+        customerClassDefinitionTest,
+        playListClassDefinitionTest,
+        songClassDefinitionTest,
+        artistServiceClassDefinitionTest,
+        songServiceClassDefinitionTest,
+        playlistsServiceClassDefinitionTest,
+        customerAdminServiceClassDefinitionTest,
+        adminControllerClassDefinitionTest
+

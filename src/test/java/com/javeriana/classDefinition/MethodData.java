@@ -1,4 +1,4 @@
-package helpers;
+package com.javeriana.classDefinition;
 
 public record MethodData(
     String name,

@@ -1,31 +1,42 @@
-package helpers;
+package com.javeriana.classDefinition;
 
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.Mockito.mock;
 
+import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
+import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.Type;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
-import java.util.function.Consumer;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-public class ClassDefinitionHelper {
+public class DefinitionTester {
 
     private static final String GET = "get";
     public static final String SET = "set";
     public static final String PUBLIC_MODIFIER = Modifier.toString(Modifier.PUBLIC);
-
     public static final String PRIVATE_MODIFIER = Modifier.toString(Modifier.PRIVATE);
-
     public static final Map.Entry<Integer, String> DEFAULT_ENTRY = Map.entry(0, "");
+
     Class<?> testClass;
 
-    public ClassDefinitionHelper(Class<?> testClass) {
+    public static final DefinitionTester create(String className) {
+        try {
+            return new DefinitionTester(Class.forName(className));
+        } catch (ClassNotFoundException e) {
+            throw new AssertionError("Class " + className + " not found.");
+        }
+    }
+
+    private DefinitionTester(Class<?> testClass) {
         this.testClass = testClass;
     }
 
@@ -37,7 +48,7 @@ public class ClassDefinitionHelper {
             .collect(
                 Collectors.toMap(
                     method -> method.getName(),
-                    method -> Map.entry(method.getModifiers(), method.getReturnType().getSimpleName())
+                    method -> Map.entry(method.getModifiers(), getReturnType(method))
                 )
             );
     }
@@ -50,7 +61,7 @@ public class ClassDefinitionHelper {
             .collect(
                 Collectors.toMap(
                     method -> method.getName(),
-                    method -> Map.entry(method.getModifiers(), method.getReturnType().getSimpleName())
+                    method -> Map.entry(method.getModifiers(), getReturnType(method))
                 )
             );
     }
@@ -62,7 +73,7 @@ public class ClassDefinitionHelper {
             .collect(
                 Collectors.toMap(
                     field -> field.getName(),
-                    field -> Map.entry(field.getModifiers(), field.getType().getSimpleName())
+                    field -> Map.entry(field.getModifiers(), getAttributeType(field))
                 )
             );
     }
@@ -75,6 +86,24 @@ public class ClassDefinitionHelper {
             return false;
         }
     }
+
+    public boolean hasConstructor(String ... parameterTypes) {
+
+        var parameterTypesClasses = new ArrayList<Class<?>>();
+
+        for (String parameterType : parameterTypes) {
+            try {
+                parameterTypesClasses.add(Class.forName(parameterType));
+            } catch (ClassNotFoundException e) {
+                throw new AssertionError("Class " + parameterType + " not found.");
+            }
+        }
+
+        var parameterTypesArray = parameterTypesClasses.toArray(new Class<?>[0]);
+
+        return hasConstructor(parameterTypesArray);
+    }
+
 
     private String getGetterName(String attributeName) {
         return GET + attributeName.substring(0, 1).toUpperCase() + attributeName.substring(1);
@@ -102,8 +131,13 @@ public class ClassDefinitionHelper {
 
         var setters = setters();
 
+        var attributesToValidate = expectedAttributes.stream()
+            .filter(attribute -> attribute.validateSetter())
+            .collect(Collectors.toList());
+
+
         assertAll(
-            expectedAttributes.stream()
+            attributesToValidate.stream()
                 .flatMap(attribute -> Stream.of(
                  () -> assertTrue(setters.containsKey(getSetterName(attribute.name())), getSetterName(attribute.name()) + " method does not exist in " + testClass.getSimpleName() + " class."),
                  () -> assertEquals(PUBLIC_MODIFIER, Modifier.toString(setters.getOrDefault(getSetterName(attribute.name()), DEFAULT_ENTRY).getKey()), getSetterName(attribute.name()) + " method is not public in " + testClass.getSimpleName() + " class."),
@@ -112,7 +146,7 @@ public class ClassDefinitionHelper {
         );
 
         if (setters.size() > expectedAttributes.size()) {
-            List<String> extraSetters = setters.keySet().stream()
+            var extraSetters = setters.keySet().stream()
                 .filter(setter -> !expectedAttributes.stream()
                     .map(attribute -> getSetterName(attribute.name()))
                     .anyMatch(attribute -> attribute.equals(setter)))
@@ -156,13 +190,17 @@ public class ClassDefinitionHelper {
     }
 
     public void testMethodDefinition(MethodData methodData) {
+
         try {
             Method method = testClass.getMethod(methodData.name(), methodData.parameterTypes());
+
+            String returnType = getReturnType(method);
+
             assertAll(
                 () -> assertEquals(methodData.modifier(), Modifier.toString(method.getModifiers()),
                     methodData.name() + " method in " + testClass.getSimpleName() + " class is not " +
                         methodData.modifier() + "."),
-                () -> assertEquals(methodData.returnType(), method.getReturnType().getSimpleName(),
+                () -> assertEquals(methodData.returnType(), returnType,
                     methodData.name() + " method in " + testClass.getSimpleName() + " class does not return " +
                         methodData.returnType() + ".")
             );
@@ -172,8 +210,56 @@ public class ClassDefinitionHelper {
         }
     }
 
+    private String getReturnType(Method method) {
+
+        var returnType = method.getReturnType().getSimpleName();
+
+        if (method.getGenericReturnType() instanceof ParameterizedType parameterizedType) {
+            Type[] typeArguments = parameterizedType.getActualTypeArguments();
+            String genericTypes =  "<" + Arrays.stream(typeArguments)
+                .map(type -> getTypeSimpleName(type))
+                .collect(Collectors.joining(", ")) + ">";
+            return returnType + genericTypes;
+        }
+
+        return getTypeNameWithGenerics(method.getGenericReturnType(), returnType);
+
+    }
+
+    private String getAttributeType(Field field) {
+
+        var fieldType = field.getType().getSimpleName();
+
+        return getTypeNameWithGenerics(field.getGenericType(), fieldType);
+    }
+
+    private String getTypeNameWithGenerics(Type genericType, String typeName) {
+        if (genericType instanceof ParameterizedType parameterizedType) {
+            Type[] typeArguments = parameterizedType.getActualTypeArguments();
+            String genericTypes = "<" + Arrays.stream(typeArguments)
+                .map(this::getTypeSimpleName)
+                .collect(Collectors.joining(", ")) + ">";
+            return typeName + genericTypes;
+        }
+        return typeName;
+    }
+
+    private String getTypeSimpleName(Type type) {
+
+        if (type instanceof Class<?> clazz) {
+            return clazz.getSimpleName();
+        }
+
+        if (type instanceof ParameterizedType parameterizedType) {
+            return parameterizedType.getRawType().getTypeName();
+        }
+
+        return type.getTypeName();
+    }
+
+
     public void testToStringMethod() {
-        MethodData toStringMethod = new MethodData("toString", "String", PUBLIC_MODIFIER);
+        var toStringMethod = new MethodData("toString", "String", PUBLIC_MODIFIER);
 
         try {
             String classDefiningToString = testClass.getMethod(toStringMethod.name()).getDeclaringClass().getName();

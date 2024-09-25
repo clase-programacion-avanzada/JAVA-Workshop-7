@@ -41,3 +41,8 @@ bin/
 ### Mac OS ###
 .DS_Store
 /.idea/
+
+/src/main/java/com/javeriana/model/*
+/src/main/java/com/javeriana/service/*
+/src/main/java/com/javeriana/controller/*
+/src/main/java/com/javeriana/view/*
