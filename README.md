@@ -231,7 +231,7 @@ En todos los casos, los datos que el cliente le indique deben ser ingresados por
 
 El programa debe compilar y ejecutar sin errores. Se debe cumplir con los siguientes requerimientos:
 
-1. Las clases deben cumplir con el principio de responsabilidad única.(1.0)
+1. Las clases deben tener correctamente asignadas las responsabilidades.(1.0)
 2. La clase `Main` o clases definidas como 'vistas' son las únicas que pueden imprimir en consola y pedir datos.(1.0)
 3. El programa debe agregar artistas, clientes, canciones y listas de reproducción a las listas correspondientes.(1.0)
 4. El programa debe eliminar artistas, clientes, canciones y listas de reproducción de las listas correspondientes.(1.0)
